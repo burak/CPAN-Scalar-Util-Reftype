@@ -117,8 +117,8 @@ to see if is matches the desired type.
 Exported by default.
 
 Returns an object with which you can call various test methods. Unless
-specified otherwise, the test methods return either zero (false) or one
-(true) based on the C<EXPR> you have specified.
+specified otherwise, all of the test methods return either zero (false)
+or one (true) based on the C<EXPR> you have specified.
 
 =head3 scalar
 
