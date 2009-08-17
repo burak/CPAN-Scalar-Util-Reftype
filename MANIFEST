@@ -1,0 +1,8 @@
+lib/Scalar/Util/Reftype.pm
+t/02-basic.t
+Makefile.PL
+Build.PL
+Changes
+MANIFEST
+README
+SPEC
