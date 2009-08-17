@@ -108,7 +108,7 @@ Scalar::Util::Reftype - Alternate reftype() interface
 
 This is an alternate interface to C<Scalar::Util>'s C<reftype> function.
 Instead of manual type checking you can just call methods on the result
-to see if is matches the desired type.
+to see if matches the desired type.
 
 =head1 FUNCTIONS
 
@@ -159,8 +159,8 @@ Returns an empty string otherwise.
 
 =head1 METHODS
 
-The module uses an OO backend. You won't be needing the OO interface. Please
-use the C<reftype> function.
+The module uses an OO backend which you won't be needing. Please use the
+C<reftype> function.
 
 =head2 new
 
