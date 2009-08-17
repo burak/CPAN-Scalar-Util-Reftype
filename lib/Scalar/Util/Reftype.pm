@@ -1,7 +1,7 @@
 package Scalar::Util::Reftype;
 use strict;
 use vars qw( $VERSION @ISA $OID @EXPORT @EXPORT_OK );
-use constant LIST_PRIMITIVE => qw( SCALAR ARRAY HASH CODE GLOB REF IO REGEXP );
+use constant PRIMITIVES => qw( SCALAR ARRAY HASH CODE GLOB REF IO REGEXP );
 use subs qw( container class reftype type blessed object );
 use overload bool     => '_bool',
              fallback => 1,
@@ -16,7 +16,7 @@ $VERSION   = '0.20';
 
 BEGIN {
     $OID = -1;
-    foreach my $type ( LIST_PRIMITIVE ) {
+    foreach my $type ( PRIMITIVES ) {
         constant->import( 'TYPE_' . $type,             ++$OID );
         constant->import( 'TYPE_' . $type . '_OBJECT', ++$OID );
     }
@@ -57,7 +57,7 @@ sub analyze {
     my $thing = shift || return $self;
     my $ref   = CORE::ref($thing) || return $self;
     my($id, $type);
-    foreach $type ( LIST_PRIMITIVE ) {
+    foreach $type ( PRIMITIVES ) {
         $id = $ref eq $type                 ? sprintf( 'TYPE_%s',        $type )
             : $self->_object($thing, $type) ? sprintf( 'TYPE_%s_OBJECT', $type )
             :                                 undef
