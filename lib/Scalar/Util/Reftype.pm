@@ -10,7 +10,7 @@ use re           ();
 use Scalar::Util ();
 use Exporter     ();
 
-$VERSION   = '0.21';
+$VERSION   = '0.30';
 @ISA       = qw( Exporter );
 @EXPORT    = qw( reftype  );
 @EXPORT_OK = qw( type     );
@@ -43,11 +43,13 @@ BEGIN {
         }
     }
 
-    # http://www.perlmonks.org/index.pl?node_id=665429
-    *re::is_regexp = sub($) {
-        local *__ANON__ = 'is_regexp';
-        return UNIVERSAL::isa( $_[0], ref qr// );
-    } if ! defined &re::is_regexp;
+    # http://perlmonks.org/?node_id=665339
+    if ( ! defined &re::is_regexp ) {
+        require Data::Dump::Streamer;
+        *re::is_regexp = sub($) {
+            Data::Dump::Streamer::regex( $_[0] )
+        }
+    }
 }
 
 sub reftype { __PACKAGE__->new->analyze( @_ ) }
@@ -201,8 +203,20 @@ C<reftype> function.
 
 =head2 analyze EXPR
 
+=head1 CAVEATS
+
+perl versions 5.10 and newer includes the function C<re::is_regexp> to detect
+if a reference is a regex or not. While it is possible to detect normal regexen
+in older perls, there is no simple way to detect C<bless>ed regexen. Blessing
+a regex hides it from normal probes. If you are under perl C<5.8.x> or older,
+you'll need to install (in fact, it's in the prerequisities list so any
+automated tool --like cpan shell-- will install it automatically)
+C<Data::Dump::Streamer> which provides the C<regex> function similar to
+C<re::is_regexp>.
+
 =head1 SEE ALSO
 
-L<Scalar::Util>.
+L<Scalar::Util>, L<Data::Dump::Streamer>, L<re>,
+L<http://perlmonks.org/?node_id=665339>.
 
 =cut
