@@ -57,9 +57,9 @@ BEGIN {
     }
 }
 
-sub reftype { __PACKAGE__->new->analyze( @_ ) }
+sub reftype { __PACKAGE__->_new->_analyze( @_ ) }
 
-sub new {
+sub _new {
     my $class = shift;
     my $self  = [ map { 0 } 0..MAXID ];
     $self->[CONTAINER] = '';
@@ -67,7 +67,7 @@ sub new {
     return $self;
 }
 
-sub analyze {
+sub _analyze {
     my $self  = shift;
     my $thing = shift || return $self;
     my $ref   = CORE::ref($thing) || return $self;
@@ -272,15 +272,6 @@ Tests if C<EXPR> is a Regexp reference based object or not.
 
 Returns the name of the class the object based on if C<EXPR> is an object.
 Returns an empty string otherwise.
-
-=head1 METHODS
-
-The module uses an OO backend which you won't be needing. Please use the
-C<reftype> function.
-
-=head2 new
-
-=head2 analyze EXPR
 
 =head1 CAVEATS
 
