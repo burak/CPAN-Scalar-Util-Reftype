@@ -19,6 +19,9 @@ Please see this page for more information on the subject:
 HATE_WHEN_OLD_PERL_MISSES_SOME_CRITICAL_FEATURE
     $extra{'Data::Dump::Streamer'} = 0;
 }
+
+$extra{'warnings::compat'} = 0 if $] < 5.006;
+
 {
     module_name => 'Scalar::Util::Reftype',
     requires    => {

@@ -1,6 +1,8 @@
 package Scalar::Util::Reftype;
 use strict;
+use warnings;
 use vars qw( $VERSION @ISA $OID @EXPORT @EXPORT_OK );
+use constant MINUS_ONE      => -1;
 use constant HAS_FORMAT_REF => $] >= 5.008; # old ones don't have it
 use constant PRIMITIVES     => qw(
     Regexp IO SCALAR ARRAY HASH CODE GLOB REF LVALUE
@@ -13,15 +15,14 @@ use overload bool     => '_bool',
             ;
 use re           ();
 use Scalar::Util ();
-use Exporter     ();
-
-$VERSION   = '0.40';
-@ISA       = qw( Exporter );
-@EXPORT    = qw( reftype  );
-@EXPORT_OK = qw( type  HAS_FORMAT_REF );
+use base qw( Exporter );
 
 BEGIN {
-    $OID = -1;
+    $VERSION   = '0.41';
+    @EXPORT    = qw( reftype  );
+    @EXPORT_OK = qw( type  HAS_FORMAT_REF );
+
+    $OID = MINUS_ONE;
     foreach my $type ( PRIMITIVES ) {
         constant->import( 'TYPE_' . $type,             ++$OID );
         constant->import( 'TYPE_' . $type . '_OBJECT', ++$OID );
@@ -37,9 +38,14 @@ BEGIN {
     *class  = \*container;
     *type   = \*reftype;
     *object = \*blessed;
+    my @types;
     no strict 'refs';
-    my @types = grep  { s{ \A TYPE_ (.+?) \z }{$1}xms }
-                keys %{ __PACKAGE__ . '::' };
+    foreach my $sym ( keys %{ __PACKAGE__ . q{::} } ) {
+        if ( $sym =~ m{ \A TYPE_ (.+?) \z }xms ) {
+            push @types, $1;
+        }
+    }
+
     foreach my $meth ( @types ) {
         *{ lc $meth } = sub {
             my $self = shift;
@@ -52,17 +58,21 @@ BEGIN {
     if ( ! defined &re::is_regexp ) {
         require Data::Dump::Streamer;
         *re::is_regexp = sub($) {
-            Data::Dump::Streamer::regex( $_[0] )
+            return Data::Dump::Streamer::regex( shift );
         }
     }
 }
 
-sub reftype { __PACKAGE__->_new->_analyze( @_ ) }
+sub reftype {
+    my @args = @_;
+    my $o    = __PACKAGE__->_new;
+    return $o->_analyze( @args )
+}
 
 sub _new {
     my $class = shift;
     my $self  = [ map { 0 } 0..MAXID ];
-    $self->[CONTAINER] = '';
+    $self->[CONTAINER] = q{};
     bless  $self, $class;
     return $self;
 }
@@ -71,10 +81,9 @@ sub _analyze {
     my $self  = shift;
     my $thing = shift || return $self;
     my $ref   = CORE::ref($thing) || return $self;
-    my($id, $type);
 
-    foreach $type ( PRIMITIVES ) {
-        $id = $ref eq $type                 ? sprintf( 'TYPE_%s',        $type )
+    foreach my $type ( PRIMITIVES ) {
+        my $id = $ref eq $type                 ? sprintf( 'TYPE_%s',        $type )
             : $self->_object($thing, $type) ? sprintf( 'TYPE_%s_OBJECT', $type )
             :                                 undef
             ;
@@ -89,8 +98,8 @@ sub _analyze {
     return $self;
 }
 
-sub container { shift->[CONTAINER] }
-sub blessed   { shift->[BLESSED]   }
+sub container { return shift->[CONTAINER] }
+sub blessed   { return shift->[BLESSED]   }
 
 sub _object {
     my($self, $object, $type)= @_;
@@ -115,9 +124,9 @@ sub _object {
 sub _bool {
     require Carp;
     Carp::croak(
-         "reftype() objects can not be used in boolean contexts. "
-        ."Please call one of the test methods on the return value instead. "
-        ."Example: `print 42 if reftype( \$thing )->array;`"
+         'reftype() objects can not be used in boolean contexts. '
+        .'Please call one of the test methods on the return value instead. '
+        .'Example: `print 42 if reftype( \$thing )->array;`'
     );
 }
 

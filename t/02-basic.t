@@ -1,5 +1,6 @@
 #!/usr/bin/env perl -w
 use strict;
+use warnings;
 use Test::More qw( no_plan );
 use Scalar::Util::Reftype qw( reftype HAS_FORMAT_REF );
 
@@ -8,7 +9,7 @@ my $sref    = \$scalar;
 my $ioref   = *STDIN{IO};
 my $re      = qr/ Testing /xmsi;
 my $gref    = \*STDOUT;
-my $lvalue  = \substr('',0);
+my $lvalue  = \substr q{}, 0;
 
 # normal refs
 is( reftype( \$0     )->scalar   , 1, 'Testing SCALAR' );
@@ -51,18 +52,20 @@ is( reftype( $lvalueo )->lvalue_object,     1, 'Object is a  LVALUE object' );
 
 is( reftype( $scalaro )->container    , 'Foo', 'Object is an instance of Foo (container)' );
 is( reftype( $scalaro )->class        , 'Foo', 'Object is an instance of Foo (class)' );
-is( reftype( \$0      )->container    ,    '', 'Non-blessed returns empty string');
+is( reftype( \$0      )->container    ,   q{}, 'Non-blessed returns empty string');
 
 # false tests
-is( reftype(''        )->array        ,     0, 'Test non-ref (empty string)' );
+is( reftype(q{}       )->array        ,     0, 'Test non-ref (empty string)' );
 is( reftype(undef     )->array        ,     0, 'Test non-ref (undef)'        );
 is( reftype(0         )->array        ,     0, 'Test non-ref (zero)'         );
 
 # non-ref tests
 is( reftype('foobar'  )->array        ,     0, 'Test non-ref' );
 
-eval {
-    print 42 if reftype( 'secrets of the universe' );
+my $ok = eval {
+    if ( reftype( 'secrets of the universe' ) ) {
+        my $pok = print '42';
+    }
 };
 
 ok( $@, 'Error thrown' );
@@ -73,7 +76,7 @@ like(
 );
 
 SKIP: {
-    skip("Skipping FORMAT tests under old perl",2) if ! HAS_FORMAT_REF;
+    skip('Skipping FORMAT tests under old perl',2) if ! HAS_FORMAT_REF;
     format STDERR =
 .
     my $fref = *STDERR{FORMAT};
