@@ -77,8 +77,10 @@ like(
 
 SKIP: {
     skip('Skipping FORMAT tests under old perl',2) if ! HAS_FORMAT_REF;
+    ## no critic (ProhibitFormats)
     format STDERR =
 .
+    ## use critic
     my $fref = *STDERR{FORMAT};
     is( reftype( $fref )->format       , 1, 'Testing FORMAT' );
     my $fobj = bless $fref, 'Foo';
