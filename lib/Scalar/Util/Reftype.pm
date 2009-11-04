@@ -18,7 +18,7 @@ use Scalar::Util ();
 use base qw( Exporter );
 
 BEGIN {
-    $VERSION   = '0.41';
+    $VERSION   = '0.42';
     @EXPORT    = qw( reftype  );
     @EXPORT_OK = qw( type  HAS_FORMAT_REF );
 
@@ -50,14 +50,14 @@ BEGIN {
         *{ lc $meth } = sub {
             my $self = shift;
             my $id   = 'TYPE_' . $meth;
-            return $self->[ $self->$id ];
+            return $self->[ $self->$id() ];
         }
     }
 
     # http://perlmonks.org/?node_id=665339
     if ( ! defined &re::is_regexp ) {
-        require Data::Dump::Streamer;
         *re::is_regexp = sub($) {
+            require Data::Dump::Streamer;
             return Data::Dump::Streamer::regex( shift );
         }
     }
