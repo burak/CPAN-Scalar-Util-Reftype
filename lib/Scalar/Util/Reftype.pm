@@ -84,9 +84,9 @@ sub _analyze {
 
     foreach my $type ( PRIMITIVES ) {
         my $id = $ref eq $type                 ? sprintf( 'TYPE_%s',        $type )
-            : $self->_object($thing, $type) ? sprintf( 'TYPE_%s_OBJECT', $type )
-            :                                 undef
-            ;
+               : $self->_object($thing, $type) ? sprintf( 'TYPE_%s_OBJECT', $type )
+               :                                 undef
+               ;
         if ( $id ) {
             $self->[ $self->$id() ] = 1 if ! $self->[OVERRIDE];
             # IO refs are always objects
@@ -103,20 +103,23 @@ sub blessed   { return shift->[BLESSED]   }
 
 sub _object {
     my($self, $object, $type)= @_;
-    my $blessed = Scalar::Util::blessed($object) || return;
-    my $rt      = Scalar::Util::reftype($object);
+    my $blessed = Scalar::Util::blessed( $object ) || return;
+    my $rt      = Scalar::Util::reftype( $object );
     $self->[BLESSED] = 1;
+
     if ( $rt eq 'IO' ) { # special case: IO
         $self->[TYPE_IO_OBJECT] = 1;
         $self->[TYPE_IO]        = 1;
         $self->[OVERRIDE]       = 1;
         return 1;
     }
+
     if ( re::is_regexp( $object ) ) { # special case: Regexp
         $self->[TYPE_Regexp_OBJECT] = 1;
         $self->[OVERRIDE]           = 1;
         return 1;
     }
+
     return if $rt ne $type; #  || ! ( $blessed eq 'IO' && $blessed eq $type );
     return 1;
 }
@@ -300,8 +303,8 @@ C<re::is_regexp>.
 =item *
 
 IO refs are already implemented as objects, so both C<< reftype(EXPR)->io >>
-and C<< reftype(EXPR)->io_object >> will return true is C<EXPR> is either
-and IO reference or an IO reference based object.
+and C<< reftype(EXPR)->io_object >> will return true if C<EXPR> is either
+an IO reference or an IO reference based object.
 
 =item *
 
