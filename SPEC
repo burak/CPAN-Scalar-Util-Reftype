@@ -34,4 +34,9 @@ $extra{'warnings::compat'} = 0 if $] < 5.006;
             repository => 'http://bitbucket.org/burak/cpan-scalar-util-reftype/',
         },
     },
+    BUILDER => {
+        change_versions                  => 1,
+        copyright_first_year             => 2009,
+        add_pod_author_copyright_license => 1,
+    },
 }
