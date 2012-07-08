@@ -18,7 +18,7 @@ use Scalar::Util ();
 use base qw( Exporter );
 
 BEGIN {
-    $VERSION   = '0.42';
+    $VERSION   = '0.43';
     @EXPORT    = qw( reftype  );
     @EXPORT_OK = qw( type  HAS_FORMAT_REF );
 
