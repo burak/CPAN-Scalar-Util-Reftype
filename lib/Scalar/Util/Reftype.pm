@@ -2,7 +2,7 @@ package Scalar::Util::Reftype;
 use strict;
 use warnings;
 use vars qw( $VERSION @ISA $OID @EXPORT @EXPORT_OK );
-use constant MINUS_ONE      => -1;
+use constant RESET_COUNTER  => -1;
 use constant HAS_FORMAT_REF => $] >= 5.008; # old ones don't have it
 use constant PRIMITIVES     => qw(
     Regexp IO SCALAR ARRAY HASH CODE GLOB REF LVALUE
@@ -22,7 +22,7 @@ BEGIN {
     @EXPORT    = qw( reftype  );
     @EXPORT_OK = qw( type  HAS_FORMAT_REF );
 
-    $OID = MINUS_ONE;
+    $OID = RESET_COUNTER;
     foreach my $type ( PRIMITIVES ) {
         constant->import( 'TYPE_' . $type,             ++$OID );
         constant->import( 'TYPE_' . $type . '_OBJECT', ++$OID );
