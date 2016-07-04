@@ -18,7 +18,7 @@ use Scalar::Util ();
 use base qw( Exporter );
 
 BEGIN {
-    $VERSION   = '0.43';
+    $VERSION   = '0.44';
     @EXPORT    = qw( reftype  );
     @EXPORT_OK = qw( type  HAS_FORMAT_REF );
 
@@ -139,6 +139,10 @@ __END__
 
 =pod
 
+=head1 DEPRECATION NOTICE
+
+This module is B<DEPRECATED>. Please use L<Ref::Util> instead.
+
 =head1 NAME
 
 Scalar::Util::Reftype - Alternate reftype() interface
@@ -159,6 +163,8 @@ Scalar::Util::Reftype - Alternate reftype() interface
     $rt->class;       # "Foo"
 
 =head1 DESCRIPTION
+
+This module is B<DEPRECATED>. Please use L<Ref::Util> instead.
 
 This is an alternate interface to C<Scalar::Util>'s C<reftype> function.
 Instead of manual type checking you can just call methods on the result

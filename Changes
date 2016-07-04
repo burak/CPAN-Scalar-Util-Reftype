@@ -1,5 +1,8 @@
 Revision history for Perl extension Scalar::Util::Reftype
 
+0.44 Tue Jul  5 01:08:59 2016
+    => This module is DEPRECATED. Please use Ref::Util instead.
+
 0.43 Sun Jul  8 01:50:04 2012
     => Bump version.
 
