@@ -1,15 +1,32 @@
 package Scalar::Util::Reftype;
+
+use 5.010;
 use strict;
 use warnings;
-use vars qw( $VERSION @ISA $OID @EXPORT @EXPORT_OK );
+
 use constant RESET_COUNTER  => -1;
-use constant HAS_FORMAT_REF => $] >= 5.008; # old ones don't have it
+# being kept for backwards compatibility, 5.10 and later have it
+use constant HAS_FORMAT_REF =>  1;
 use constant PRIMITIVES     => qw(
-    Regexp IO SCALAR ARRAY HASH CODE GLOB REF LVALUE
-),
-( HAS_FORMAT_REF ? qw(FORMAT) : () )
-;
-use subs qw( container class reftype type blessed object );
+    ARRAY
+    CODE
+    FORMAT
+    GLOB
+    HASH
+    IO
+    LVALUE
+    REF
+    Regexp
+    SCALAR
+);
+use subs qw(
+    blessed
+    class
+    container
+    object
+    reftype
+    type
+);
 use overload bool     => '_bool',
              fallback => 1,
             ;
@@ -17,11 +34,11 @@ use re           ();
 use Scalar::Util ();
 use base qw( Exporter );
 
-BEGIN {
-    $VERSION   = '0.44';
-    @EXPORT    = qw( reftype  );
-    @EXPORT_OK = qw( type  HAS_FORMAT_REF );
+our @EXPORT    = qw( reftype  );
+our @EXPORT_OK = qw( type  HAS_FORMAT_REF );
 
+my $OID;
+BEGIN {
     $OID = RESET_COUNTER;
     foreach my $type ( PRIMITIVES ) {
         constant->import( 'TYPE_' . $type,             ++$OID );
@@ -51,14 +68,6 @@ BEGIN {
             my $self = shift;
             my $id   = 'TYPE_' . $meth;
             return $self->[ $self->$id() ];
-        }
-    }
-
-    # http://perlmonks.org/?node_id=665339
-    if ( ! defined &re::is_regexp ) {
-        *re::is_regexp = sub($) {
-            require Data::Dump::Streamer;
-            return Data::Dump::Streamer::regex( shift );
         }
     }
 }
@@ -95,6 +104,7 @@ sub _analyze {
             last;
         }
     }
+
     return $self;
 }
 

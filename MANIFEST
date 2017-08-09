@@ -1,7 +1,0 @@
-lib/Scalar/Util/Reftype.pm
-t/02-basic.t
-Build.PL
-Changes
-MANIFEST
-README
-SPEC
