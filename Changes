@@ -2,6 +2,8 @@ Revision history for Perl extension Scalar::Util::Reftype
 
 {{$NEXT}}
     - Migrate to dzil.
+    - Workaround qr// returning blessed refs.
+    - _dump method.
 
 0.44 Tue Jul  5 01:08:59 2016
     - This module is DEPRECATED. Please use Ref::Util instead.
