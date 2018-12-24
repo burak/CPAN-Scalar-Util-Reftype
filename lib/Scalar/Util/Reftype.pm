@@ -81,7 +81,7 @@ BEGIN {
         $max -= length $rm;
         for my $name ( sort { lc $a cmp lc $b } keys %val) {
             (my $display = $name) =~ s{ \A $rm }{}xms;
-            printf "% ${max}s: %s\n", $display, $val{ $name };
+            printf "% ${max}s: %s\n", $display, $val{ $name } ? 'true' : '';
         }
     };
 }
