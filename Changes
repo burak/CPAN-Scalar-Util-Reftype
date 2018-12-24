@@ -1,6 +1,8 @@
 Revision history for Perl extension Scalar::Util::Reftype
 
 {{$NEXT}}
+
+0.45 2018-12-25 BURAK
     - Migrate to dzil.
     - Workaround qr// returning blessed refs.
     - _dump method.
