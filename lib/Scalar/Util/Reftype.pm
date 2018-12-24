@@ -55,11 +55,12 @@ BEGIN {
     *class  = \*container;
     *type   = \*reftype;
     *object = \*blessed;
-    my @types;
+    my(@types, @obj_idx);
     no strict 'refs';
     foreach my $sym ( keys %{ __PACKAGE__ . q{::} } ) {
         if ( $sym =~ m{ \A TYPE_ (.+?) \z }xms ) {
             push @types, $1;
+            push @obj_idx, $sym;
         }
     }
 
@@ -70,6 +71,19 @@ BEGIN {
             return $self->[ $self->$id() ];
         }
     }
+
+    *_dump = sub {
+        my $self = shift;
+        my %type = map { $self->$_() => $_          } @obj_idx;
+        my %val  = map { $type{$_}   => $self->[$_] } 0..$#obj_idx;
+        my $max  = ( sort { $b <=> $a } map { length $_ } keys %val)[0];
+        my $rm   = 'TYPE_';
+        $max -= length $rm;
+        for my $name ( sort { lc $a cmp lc $b } keys %val) {
+            (my $display = $name) =~ s{ \A $rm }{}xms;
+            printf "% ${max}s: %s\n", $display, $val{ $name };
+        }
+    };
 }
 
 sub reftype {
