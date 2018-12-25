@@ -129,8 +129,17 @@ sub _object {
     my($self, $object, $type)= @_;
     my $blessed = Scalar::Util::blessed( $object ) || return;
     my $rt      = Scalar::Util::reftype( $object );
+
     # new perl (5.24+ ?) messes the detection
-    return if $rt && $blessed && $rt eq 'REGEXP' && $blessed eq 'Regexp';
+    if (   $rt
+        && $blessed
+        #            new               5.10
+        && ( $rt eq 'REGEXP' || $rt eq 'SCALAR')
+        && $blessed eq 'Regexp'
+    ) {
+        return;
+    }
+
     $self->[BLESSED] = 1;
 
     if ( $rt eq 'IO' ) { # special case: IO
