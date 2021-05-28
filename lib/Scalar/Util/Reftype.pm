@@ -32,7 +32,7 @@ use overload bool     => '_bool',
             ;
 use re           ();
 use Scalar::Util ();
-use base qw( Exporter );
+use parent qw( Exporter );
 
 our @EXPORT    = qw( reftype  );
 our @EXPORT_OK = qw( type  HAS_FORMAT_REF );
